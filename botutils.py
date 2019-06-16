@@ -3,11 +3,15 @@ import json
 import random
 import re
 import time
+import io
 from datetime import timedelta
 from typing import Tuple
+
 import discord
 from num2words import num2words
+
 from redisdb import REDISDB
+from osu_utils.utils import osu_getuserinfo, osu_drawuserinfo
 
 
 async def poll(client: discord.Client,
@@ -18,8 +22,12 @@ async def poll(client: discord.Client,
     prompt = re_match.group(2)
     channel = message.channel
 
-    # delete previous command
-    await client.delete_message(message)
+    try:
+        # delete previous command
+        await client.delete_message(message)
+    except discord.errors.Forbidden:
+        # missing permissions
+        pass
 
     def td(s: float) -> str: return str(timedelta(seconds=int(s)))
 
@@ -148,6 +156,77 @@ async def autoyeet_loop_channelid(client: discord.Client,
         if not yeetdb[channel.id]:
             break
         await client.send_message(channel, 'YEET!')
+
+
+async def love_calculator(client: discord.Client,
+                          message: discord.Message):
+    # message preprocessing
+    re_match = re.match(r'^\$lovecalc (.+)', message.content)
+    re_persons = re_match.group(1).strip().split(',')
+    if len(re_persons) != 2:
+        await client.send_message(message.channel, f'Incorrect usage')
+        return
+    persons = ','.join(p.strip().lower() for p in re_persons)
+    # reversed
+    r_persons = ','.join(p.strip().lower() for p in re_persons[::-1])
+    lovedb = json.loads(REDISDB.get('LOVEDB').decode())
+    if persons not in lovedb and r_persons not in lovedb:
+        love = random.randint(0, 100)
+        lovedb[persons] = love
+        REDISDB.set('LOVEDB', json.dumps(lovedb))
+    # format response
+    score, r_score = lovedb.get(persons), lovedb.get(r_persons)
+    love = score if score is not None else r_score
+    await client.send_message(message.channel, f'I\'d give '
+                              f'{persons.split(",")[0]} and '
+                              f'{persons.split(",")[1]} a love score of '
+                              f'{love}%')
+
+
+async def osu_userinfo(client: discord.Client,
+                       message: discord.Message):
+    """
+    Get user info for an osu player through osu API
+    """
+    re_match = re.match(r'^\$osu user (.+)', message.content)
+    user_name = re_match.group(1)
+    info = await osu_getuserinfo(user_name)
+    if not info:
+        await client.send_message(message.channel, 'User not found!')
+        return
+    image = osu_drawuserinfo(info[0])
+    image_bytes = io.BytesIO()
+    image.save(image_bytes, format='png')
+    await client.send_file(message.channel, io.BytesIO(image_bytes.getvalue()),
+                           filename='stats.png')
+
+
+# honestly i have no idea what i was going for below here.
+
+async def make_macro(client: discord.Client,
+                     message: discord.Message):
+    """
+    Allows a user to create a macro by name
+    # Macro commands
+        say xxx
+    """
+    pass
+
+
+async def run_macro(client: discord.Client,
+                    message: discord.Message):
+    """
+    Allows the user to run the macro by name
+    """
+    pass
+
+
+async def delete_macro(client: discord.Client,
+                       message: discord.Message):
+    """
+    Deletes the macro by name
+    """
+    pass
 
 
 async def profanity_filter(client: discord.Client,

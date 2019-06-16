@@ -12,7 +12,9 @@ import botutils
 
 
 REDISDB_CONF = {
-    'AUTOYEET': dict()
+    'AUTOYEET': dict(),
+    'LOVEDB': dict(),
+    'MACROS': dict(),
 }
 for conf in REDISDB_CONF:
     if not REDISDB.get(conf):
@@ -33,8 +35,8 @@ async def on_ready():
     # TODO: Resume any polls, yeeting
     yeetdb = json.loads(REDISDB.get('AUTOYEET').decode())
     yeet_coros = []
-    for entry in yeetdb:
-        if yeetdb[entry]:
+    for entry, valid in yeetdb:
+        if valid:
             yeet_coros.append(botutils.autoyeet_loop_channelid(client, entry))
     await asyncio.gather(*yeet_coros)
 

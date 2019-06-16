@@ -18,4 +18,10 @@ msgpatterns = [
 
     Pattern(r'^\$toggleyeet$', botutils.autoyeet_toggle,
             description='Toggles spamming the chat with "YEET!"'),
+
+    Pattern(r'^\$lovecalc .+,.+', botutils.love_calculator,
+            description='Find out how well two people will go together'),
+
+    Pattern(r'^\$osu user .+', botutils.osu_userinfo,
+            description='Get the stats for an Osu! player')
 ]

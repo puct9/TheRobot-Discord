@@ -1,4 +1,5 @@
 import os
+import io
 import random
 
 import numpy as np
@@ -15,11 +16,39 @@ async def osu_getuserinfo(name: str) -> dict:
     return ret.json()
 
 
-def osu_drawuserinfo(info: dict) -> Image.Image:
+async def osu_drawuserinfo(info: dict) -> Image.Image:
     # first we do some basic styling
     img_arr = np.zeros((120, 300, 3), dtype='uint8')
     img_arr[:, :, :] = 25  # background colour
+    # before we go any further, let's paste the user's profile pic in
+    print('waiting for profile pic')
+    print(f'https://a.ppy.sh/{info["user_id"]}')
+    try:
+        req = await requests.get(f'https://a.ppy.sh/{info["user_id"]}',
+                                 timeout=2)
+    except Exception:
+        # there is a rare error where some images simply will not download
+        # not ideal solution, but we will try to give what the user wants
+        req = await requests.get(f'https://a.ppy.sh')
+    print('done')
+    profile_pic = Image.open(io.BytesIO(req.content))
+    # resize it to the desired size of 112x112 and do some checks
+    profile_pic = profile_pic.convert('RGB').resize((112, 112))
+    profile_pic_arr = np.array(profile_pic)
+    # do some padding on the thing
+    overlay_arr = np.zeros((120, 300, 3), dtype='uint8')
+    overlay_arr[:, :, :] = 25
+    overlay_arr[4:116, 4:116] = profile_pic_arr
+    # # use pillow to overlay the img_arr and overlay_arr, with the profile pic
+    # img_back = Image.fromarray(img_arr).convert('RGBA')
+    # img_over = Image.fromarray(overlay_arr).convert('RGBA')
+    # img_done = Image.blend(img_back, img_over, alpha=0.4)
+    # # we are done. convert back
+    # img_done.convert('RGB')
+    # img_arr = np.array(img_done)
     # draw a fancy line
+    img_arr = (img_arr * 0.70 + overlay_arr * 0.30).astype('uint8')
+    # or do as the line above
     img_arr[33, 10:290, :] = 127
     # draw another fancy line
     img_arr[107:112, 10:290, :] = 255

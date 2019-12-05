@@ -4,8 +4,10 @@ Discord bot - Luke
 import os
 import json
 import asyncio
+
 import discord
-from routing.mapper import automatch
+
+from routing.mapper import automatch, check_walk
 from msgs import msgpatterns
 from redisdb import REDISDB
 import botutils
@@ -51,7 +53,9 @@ async def on_message(message: discord.Message):
                                   'The command you tried to invoke was not '
                                   'found\nThe below regex patterns were '
                                   'searched in the following order:\n\n' +
-                                  '\n'.join(x.d_pattern for x in msgpatterns))
+                                  '\n'.join(x.d_pattern
+                                            for x in endpoint_patterns))
 
 
+endpoint_patterns = list(check_walk(msgpatterns))
 client.run(os.environ.get('bot_key'))

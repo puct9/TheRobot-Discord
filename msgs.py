@@ -4,6 +4,10 @@ Holds patterns to match message to function
 from routing.mapper import Pattern
 import botutils
 
+# message forwarding
+import osu_utils.msgs
+import mc_utils.msgs
+
 
 msgpatterns = [
     Pattern(r'^\$poll (\d{1,4}) (.+)', botutils.poll,
@@ -22,6 +26,7 @@ msgpatterns = [
     Pattern(r'^\$lovecalc .+,.+', botutils.love_calculator,
             description='Find out how well two people will go together'),
 
-    Pattern(r'^\$osu user .+', botutils.osu_userinfo,
-            description='Get the stats for an Osu! player')
+    Pattern(r'^\$osu .+', osu_utils.msgs.msgpatterns),
+
+    Pattern(r'^\$mc .+', mc_utils.msgs.msgpatterns)
 ]

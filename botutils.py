@@ -3,7 +3,6 @@ import json
 import random
 import re
 import time
-import io
 from datetime import timedelta
 from typing import Tuple
 
@@ -11,9 +10,10 @@ import discord
 from num2words import num2words
 
 from redisdb import REDISDB
-from osu_utils.utils import osu_getuserinfo, osu_drawuserinfo
+from routing.mapper import Endpoint
 
 
+@Endpoint
 async def poll(client: discord.Client,
                message: discord.Message) -> Tuple[str, str]:
     # Regex stuff
@@ -70,6 +70,7 @@ async def poll(client: discord.Client,
     return str(yes), str(no)
 
 
+@Endpoint
 async def num_convert_word(client: discord.Client,
                            message: discord.Message):
     re_match = re.match(r'^\$word (\d{1,308})( [a-zA-Z_]{0,5})?',
@@ -102,6 +103,7 @@ async def num_convert_word(client: discord.Client,
                                   'long to send!')
 
 
+@Endpoint
 async def reminder(client: discord.Client,
                    message: discord.Message):
     re_match = re.match(r'^\$reminder (\d+) (.+)', message.content)
@@ -114,6 +116,7 @@ async def reminder(client: discord.Client,
                               f' {reminder_text}')
 
 
+@Endpoint
 async def autoyeet_toggle(client: discord.Client,
                           message: discord.Message):
     yeetdb = json.loads(REDISDB.get('AUTOYEET').decode())
@@ -131,6 +134,7 @@ async def autoyeet_toggle(client: discord.Client,
         await client.send_message(message.channel, 'Autoyeet off')
 
 
+@Endpoint
 async def autoyeet_loop(client: discord.Client,
                         message: discord.Message):
     yeetdb = json.loads(REDISDB.get('AUTOYEET').decode())
@@ -144,6 +148,7 @@ async def autoyeet_loop(client: discord.Client,
         await client.send_message(message.channel, 'YEET!')
 
 
+@Endpoint
 async def autoyeet_loop_channelid(client: discord.Client,
                                   channelid: str):
     channel = client.get_channel(channelid)
@@ -158,6 +163,7 @@ async def autoyeet_loop_channelid(client: discord.Client,
         await client.send_message(channel, 'YEET!')
 
 
+@Endpoint
 async def love_calculator(client: discord.Client,
                           message: discord.Message):
     # message preprocessing
@@ -181,24 +187,6 @@ async def love_calculator(client: discord.Client,
                               f'{persons.split(",")[0]} and '
                               f'{persons.split(",")[1]} a love score of '
                               f'{love}%')
-
-
-async def osu_userinfo(client: discord.Client,
-                       message: discord.Message):
-    """
-    Get user info for an osu player through osu API
-    """
-    re_match = re.match(r'^\$osu user (.+)', message.content)
-    user_name = re_match.group(1)
-    info = await osu_getuserinfo(user_name)
-    if not info:
-        await client.send_message(message.channel, 'User not found!')
-        return
-    image = await osu_drawuserinfo(info[0])
-    image_bytes = io.BytesIO()
-    image.save(image_bytes, format='png')
-    await client.send_file(message.channel, io.BytesIO(image_bytes.getvalue()),
-                           filename='stats.png')
 
 
 # honestly i have no idea what i was going for below here.

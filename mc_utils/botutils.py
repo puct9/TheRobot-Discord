@@ -22,5 +22,4 @@ async def is_server_up(client: discord.Client,
         msg = f'The server `{MC_ADDR}` is UP'
     else:
         msg = f'The server `{MC_ADDR}` is DOWN'
-    raise Exception()
     await client.send_message(message.channel, msg)

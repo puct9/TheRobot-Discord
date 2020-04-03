@@ -2,12 +2,6 @@ import sys
 from socket import socket, SOCK_DGRAM, AF_INET
 
 
-def get_game_info(addr):
-    sock = socket(AF_INET, SOCK_DGRAM)
-    sock.sendto(b'\xff\xff\xff\xff\x54Source Engine Query\x00', addr)
-    return sock.recvfrom(1024)
-
-
 def get_player_info(addr):
     sock = socket(AF_INET, SOCK_DGRAM)
     sock.sendto(b'\xff\xff\xff\xff\x55\x00\x00\x00\x00', addr)

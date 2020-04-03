@@ -7,6 +7,7 @@ import botutils
 # message forwarding
 import osu_utils.msgs
 import mc_utils.msgs
+import tf2_utils.msgs
 
 
 msgpatterns = [
@@ -28,5 +29,7 @@ msgpatterns = [
 
     Pattern(r'^\$osu .+', osu_utils.msgs.msgpatterns),
 
-    Pattern(r'^\$mc .+', mc_utils.msgs.msgpatterns)
+    Pattern(r'^\$mc .+', mc_utils.msgs.msgpatterns),
+
+    Pattern(r'^\$tf2', tf2_utils.msgs.msgpatterns)
 ]

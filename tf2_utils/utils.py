@@ -1,3 +1,16 @@
+from socket import socket, AF_INET, SOCK_DGRAM
+
+
+def get_player_info(addr):
+    # for backup
+    sock = socket(AF_INET, SOCK_DGRAM)
+    sock.sendto(b'\xff\xff\xff\xff\x55\x00\x00\x00\x00', addr)
+    next_req_info = sock.recvfrom(1024)[0][5:]
+    sock.sendto(b'\xff\xff\xff\xff\x55' + next_req_info, addr)
+    info = sock.recvfrom(1024)[0]
+    return b'\x00'.join(info.split(b'\x00')[1:])
+
+
 def parse_game_info(info):
     players = []
     while info:

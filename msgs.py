@@ -29,7 +29,7 @@ msgpatterns = [
 
     Pattern(r'^\$osu .+', osu_utils.msgs.msgpatterns),
 
-    Pattern(r'^\$mc .+', mc_utils.msgs.msgpatterns),
+#     Pattern(r'^\$mc .+', mc_utils.msgs.msgpatterns),
 
     Pattern(r'^\$tf2', tf2_utils.msgs.msgpatterns)
 ]

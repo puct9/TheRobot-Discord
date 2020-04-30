@@ -29,7 +29,7 @@ async def poll(client: discord.Client,
         # missing permissions
         pass
 
-    def td(s: float) -> str: return str(timedelta(seconds=int(s)))
+    td = lambda s: str(timedelta(seconds=int(s)))
 
     embed = discord.Embed(title='Poll', description=prompt +
                           '\nUse :thumbsup: or :thumbsdown: to vote!' +
@@ -187,34 +187,6 @@ async def love_calculator(client: discord.Client,
                               f'{persons.split(",")[0]} and '
                               f'{persons.split(",")[1]} a love score of '
                               f'{love}%')
-
-
-# honestly i have no idea what i was going for below here.
-
-async def make_macro(client: discord.Client,
-                     message: discord.Message):
-    """
-    Allows a user to create a macro by name
-    # Macro commands
-        say xxx
-    """
-    pass
-
-
-async def run_macro(client: discord.Client,
-                    message: discord.Message):
-    """
-    Allows the user to run the macro by name
-    """
-    pass
-
-
-async def delete_macro(client: discord.Client,
-                       message: discord.Message):
-    """
-    Deletes the macro by name
-    """
-    pass
 
 
 async def profanity_filter(client: discord.Client,

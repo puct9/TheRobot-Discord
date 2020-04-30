@@ -1,23 +1,19 @@
 """
 Discord bot - Luke
 """
-import os
-import json
 import asyncio
+import json
+import os
+import sys
 
 import discord
 
-from routing.mapper import automatch, check_walk
+import botutils
 from msgs import msgpatterns
 from redisdb import REDISDB
-import botutils
+from routing.mapper import automatch, check_walk
 
-
-REDISDB_CONF = {
-    'AUTOYEET': dict(),
-    'LOVEDB': dict(),
-    'MACROS': dict(),
-}
+REDISDB_CONF = {}
 for conf in REDISDB_CONF:
     if not REDISDB.get(conf):
         REDISDB.set(conf, json.dumps(REDISDB_CONF[conf]))
@@ -34,13 +30,6 @@ async def on_ready():
     print(client.user.id)
     print('------')
     await client.edit_profile(username='TheRobot')
-    # TODO: Resume any polls, yeeting
-    yeetdb = json.loads(REDISDB.get('AUTOYEET').decode())
-    yeet_coros = []
-    for entry, valid in yeetdb:
-        if valid:
-            yeet_coros.append(botutils.autoyeet_loop_channelid(client, entry))
-    await asyncio.gather(*yeet_coros)
 
 
 @client.event
@@ -58,4 +47,6 @@ async def on_message(message: discord.Message):
 
 
 endpoint_patterns = list(check_walk(msgpatterns))
-client.run(os.environ.get('bot_key'))
+
+if __name__ == '__main__':
+    client.run(os.environ.get('bot_key'))

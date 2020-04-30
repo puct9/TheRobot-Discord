@@ -21,11 +21,11 @@ msgpatterns = [
     Pattern(r'^\$reminder (\d+) (.+)', botutils.reminder,
             description='Setting reminders with the reminder function'),
 
-    Pattern(r'^\$toggleyeet$', botutils.autoyeet_toggle,
-            description='Toggles spamming the chat with "YEET!"'),
+#     Pattern(r'^\$toggleyeet$', botutils.autoyeet_toggle,
+#             description='Toggles spamming the chat with "YEET!"'),
 
-    Pattern(r'^\$lovecalc .+,.+', botutils.love_calculator,
-            description='Find out how well two people will go together'),
+#     Pattern(r'^\$lovecalc .+,.+', botutils.love_calculator,
+#             description='Find out how well two people will go together'),
 
     Pattern(r'^\$osu .+', osu_utils.msgs.msgpatterns),
 

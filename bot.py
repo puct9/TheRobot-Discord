@@ -13,7 +13,9 @@ from msgs import msgpatterns
 from redisdb import REDISDB
 from routing.mapper import automatch, check_walk
 
-REDISDB_CONF = {}
+REDISDB_CONF = {
+    'con4': dict()
+}
 for conf in REDISDB_CONF:
     if not REDISDB.get(conf):
         REDISDB.set(conf, json.dumps(REDISDB_CONF[conf]))

@@ -5,9 +5,10 @@ from routing.mapper import Pattern
 import botutils
 
 # message forwarding
+import c4_utils.msgs
 import osu_utils.msgs
-import mc_utils.msgs
 import tf2_utils.msgs
+import mc_utils.msgs
 
 
 msgpatterns = [
@@ -21,15 +22,17 @@ msgpatterns = [
     Pattern(r'^\$reminder (\d+) (.+)', botutils.reminder,
             description='Setting reminders with the reminder function'),
 
-    Pattern(r'^\$toggleyeet$', botutils.autoyeet_toggle,
-            description='Toggles spamming the chat with "YEET!"'),
+#     Pattern(r'^\$toggleyeet$', botutils.autoyeet_toggle,
+#             description='Toggles spamming the chat with "YEET!"'),
 
-    Pattern(r'^\$lovecalc .+,.+', botutils.love_calculator,
-            description='Find out how well two people will go together'),
+#     Pattern(r'^\$lovecalc .+,.+', botutils.love_calculator,
+#             description='Find out how well two people will go together'),
 
     Pattern(r'^\$osu .+', osu_utils.msgs.msgpatterns),
 
-    Pattern(r'^\$mc .+', mc_utils.msgs.msgpatterns),
+#     Pattern(r'^\$mc .+', mc_utils.msgs.msgpatterns),
 
-    Pattern(r'^\$tf2', tf2_utils.msgs.msgpatterns)
+    Pattern(r'^\$tf2', tf2_utils.msgs.msgpatterns),
+
+    Pattern(r'^\$c4 .+', c4_utils.msgs.msgpatterns)
 ]

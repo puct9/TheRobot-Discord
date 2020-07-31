@@ -22,14 +22,6 @@ class Pattern:
         self.pattern = pattern
 
     @property
-    def trace(self):
-        return '69'
-
-    @trace.setter
-    def set_trace(self):
-        print('Why the fuck are you setting me?')
-
-    @property
     def d_pattern(self):
         # Returns a discord chat friendly pattern
         friendly = '```py\nr\'' + self.pattern + '\'```'
@@ -47,13 +39,15 @@ class Endpoint:
         self.trace = []
 
     async def __call__(self, c: discord.Client, m: discord.Message):
-        print(self.trace)
+        trace_info = '\n'.join(f'{i}: ' + t.pattern
+                               for i, t in enumerate(self.trace))
+        print(f'Message: {m.content}\nTrace:\n{trace_info}')
         try:
             return await self.function(c, m)
         except Exception as e:
             print(f'An exception has occurred. The message was:\n{m.content}\n'
                   'The regex filter trace is as follows:\n' +
-                  '\n'.join(t.pattern for t in self.trace) +
+                  trace_info +
                   f'\nThe exception is shown below:\n{e}\n')
 
 

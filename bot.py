@@ -31,7 +31,7 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
-    await client.edit_profile(username='TheRobot')
+    await client.user.edit(username='TheRobot')
 
 
 @client.event
@@ -40,12 +40,11 @@ async def on_message(message: discord.Message):
     if func:
         await func(client, message)
     elif not callable(func) and message.content.startswith('$'):
-        await client.send_message(message.channel,
-                                  'The command you tried to invoke was not '
-                                  'found\nThe below regex patterns were '
-                                  'searched in the following order:\n\n' +
-                                  '\n'.join(x.d_pattern
-                                            for x in endpoint_patterns))
+        await message.channel.send('The command you tried to invoke was not '
+                                   'found\nThe below regex patterns were '
+                                   'searched in the following order:\n\n' +
+                                   '\n'.join(x.d_pattern
+                                             for x in endpoint_patterns))
 
 
 endpoint_patterns = list(check_walk(msgpatterns))

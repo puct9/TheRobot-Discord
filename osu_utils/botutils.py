@@ -17,10 +17,12 @@ async def osu_userinfo(client: discord.Client,
     user_name = re_match.group(1)
     info = await osu_getuserinfo(user_name)
     if not info:
-        await client.send_message(message.channel, 'User not found!')
+        await message.channel.send('User not found!')
         return
     image = await osu_drawuserinfo(info[0])
     image_bytes = io.BytesIO()
     image.save(image_bytes, format='png')
-    await client.send_file(message.channel, io.BytesIO(image_bytes.getvalue()),
-                           filename='stats.png')
+    await message.channel.send(
+        file=discord.File(io.BytesIO(image_bytes.getvalue()),
+                          filename='stats.png')
+    )

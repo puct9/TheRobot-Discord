@@ -23,8 +23,8 @@ async def get_player_info(client: discord.Client,
     """
     # which port do we want to use?
     if not any(SUBPROC_PORTS.values()):
-        await client.send_message(message.channel, 'The server is busy. '
-                                                   'Please try again later.')
+        await message.channel.send('The server is busy. '
+                                   'Please try again later.')
         return
 
     for port, available in SUBPROC_PORTS.items():
@@ -57,4 +57,4 @@ async def get_player_info(client: discord.Client,
         msg += 'There are currently no players.'
     msg += '\n```'
 
-    await client.send_message(message.channel, msg)
+    await message.channel.send(msg)

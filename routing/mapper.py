@@ -39,13 +39,14 @@ class Endpoint:
         self.trace = []
 
     async def __call__(self, c: discord.Client, m: discord.Message):
-        print(self.trace)
+        trace_info = '\n'.join(t.pattern for t in self.trace)
+        print(f'Message: {m.content}\nTrace: {trace_info}')
         try:
             return await self.function(c, m)
         except Exception as e:
             print(f'An exception has occurred. The message was:\n{m.content}\n'
                   'The regex filter trace is as follows:\n' +
-                  '\n'.join(t.pattern for t in self.trace) +
+                  trace_info +
                   f'\nThe exception is shown below:\n{e}\n')
 
 

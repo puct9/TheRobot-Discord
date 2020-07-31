@@ -34,9 +34,7 @@ async def poll(client: discord.Client,
     embed = discord.Embed(title='Poll', description=prompt +
                           '\nUse :thumbsup: or :thumbsdown: to vote!' +
                           f'\nPoll finalizes in {td(seconds)}')
-    poll_msg = await client.send_message(
-        channel, embed=embed
-    )
+    poll_msg = await message.channel.send(embed=embed)
     # Show how much seconds the poll has got
     rem_seconds = seconds
     poll_seconds_refresh = 5
@@ -47,12 +45,13 @@ async def poll(client: discord.Client,
                               '\nUse :thumbsup: or :thumbsdown: to vote!' +
                               f'\nPoll finalizes in {td(rem_seconds)}')
         ctime = time.time()
-        poll_msg = await client.edit_message(poll_msg, embed=embed)
+        poll_msg = await poll_msg.edit(poll_msg, embed=embed)
         deltatime = time.time() - ctime
         rem_seconds -= deltatime
-    await asyncio.sleep(rem_seconds)
+    if rem_seconds > 0:
+        await asyncio.sleep(rem_seconds)
     # Poll finalized
-    poll_msg = await client.get_message(channel, poll_msg.id)
+    poll_msg = await discord.abc.Messageable.fetch_message(poll_msg.id)
     yes = 0
     no = 0
     for r in poll_msg.reactions:
@@ -66,8 +65,7 @@ async def poll(client: discord.Client,
                           '\nUse :thumbsup: or :thumbsdown: to vote!' +
                           f'\nPoll has been finished, results are final.' +
                           f'\n\nYes: {yes}\nNo: {no}')
-    await client.edit_message(poll_msg, embed=embed)
-    return str(yes), str(no)
+    await poll_msg.edit(poll_msg, embed=embed)
 
 
 @Endpoint
@@ -97,10 +95,10 @@ async def num_convert_word(client: discord.Client,
     if num in spec_cases:
         word += ' ' + spec_cases[num]
     try:
-        await client.send_message(message.channel, word)
+        await message.channel.send(word)
     except discord.errors.HTTPException:
-        await client.send_message(message.channel, 'Resulting text was too '
-                                  'long to send!')
+        await message.channel.send('Resulting text was too '
+                                   'long to send!')
 
 
 @Endpoint
@@ -109,91 +107,8 @@ async def reminder(client: discord.Client,
     re_match = re.match(r'^\$reminder (\d+) (.+)', message.content)
     seconds = re_match.group(1)
     reminder_text = re_match.group(2)
-    await client.send_message(message.channel, f'Reminder `{reminder_text}`'
-                              ' has been set.')
+    await message.channel.send(f'Reminder `{reminder_text}`'
+                               ' has been set.')
     await asyncio.sleep(int(seconds))
-    await client.send_message(message.channel, f'{message.author.mention}'
-                              f' {reminder_text}')
-
-
-@Endpoint
-async def autoyeet_toggle(client: discord.Client,
-                          message: discord.Message):
-    yeetdb = json.loads(REDISDB.get('AUTOYEET').decode())
-    if message.channel.id not in yeetdb:
-        yeetdb[message.channel.id] = False
-    yeetdb[message.channel.id] = not yeetdb[message.channel.id]
-    REDISDB.set('AUTOYEET', json.dumps(yeetdb))
-    if yeetdb[message.channel.id]:
-        # yeeting on
-        await client.send_message(message.channel, 'Autoyeet on')
-        # start the yeet loop
-        await autoyeet_loop(client, message)
-    else:
-        # yeeting off
-        await client.send_message(message.channel, 'Autoyeet off')
-
-
-@Endpoint
-async def autoyeet_loop(client: discord.Client,
-                        message: discord.Message):
-    yeetdb = json.loads(REDISDB.get('AUTOYEET').decode())
-    yeetdb[message.channel.id] = True
-    REDISDB.set('AUTOYEET', json.dumps(yeetdb))
-    while True:
-        await asyncio.sleep(random.randint(5, 120))
-        yeetdb = json.loads(REDISDB.get('AUTOYEET').decode())
-        if not yeetdb[message.channel.id]:
-            break
-        await client.send_message(message.channel, 'YEET!')
-
-
-@Endpoint
-async def autoyeet_loop_channelid(client: discord.Client,
-                                  channelid: str):
-    channel = client.get_channel(channelid)
-    yeetdb = json.loads(REDISDB.get('AUTOYEET').decode())
-    yeetdb[channel.id] = True
-    REDISDB.set('AUTOYEET', json.dumps(yeetdb))
-    while True:
-        await asyncio.sleep(random.randint(5, 120))
-        yeetdb = json.loads(REDISDB.get('AUTOYEET').decode())
-        if not yeetdb[channel.id]:
-            break
-        await client.send_message(channel, 'YEET!')
-
-
-@Endpoint
-async def love_calculator(client: discord.Client,
-                          message: discord.Message):
-    # message preprocessing
-    re_match = re.match(r'^\$lovecalc (.+)', message.content)
-    re_persons = re_match.group(1).strip().split(',')
-    if len(re_persons) != 2:
-        await client.send_message(message.channel, f'Incorrect usage')
-        return
-    persons = ','.join(p.strip().lower() for p in re_persons)
-    # reversed
-    r_persons = ','.join(p.strip().lower() for p in re_persons[::-1])
-    lovedb = json.loads(REDISDB.get('LOVEDB').decode())
-    if persons not in lovedb and r_persons not in lovedb:
-        love = random.randint(0, 100)
-        lovedb[persons] = love
-        REDISDB.set('LOVEDB', json.dumps(lovedb))
-    # format response
-    score, r_score = lovedb.get(persons), lovedb.get(r_persons)
-    love = score if score is not None else r_score
-    await client.send_message(message.channel, f'I\'d give '
-                              f'{persons.split(",")[0]} and '
-                              f'{persons.split(",")[1]} a love score of '
-                              f'{love}%')
-
-
-async def profanity_filter(client: discord.Client,
-                           message: discord.Message):
-    profanity = [
-        'fuck', 'cunt', 'shit',
-    ]
-    if any(x in message.content.lower() for x in profanity):
-        await client.send_message(message.channel, 'Did you just swear on'
-                                  ' my christian minecraft server?!11!!')
+    await message.channel.send(f'{message.author.mention}'
+                               f' {reminder_text}')

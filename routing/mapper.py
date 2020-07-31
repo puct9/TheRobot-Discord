@@ -39,8 +39,9 @@ class Endpoint:
         self.trace = []
 
     async def __call__(self, c: discord.Client, m: discord.Message):
-        trace_info = '\n'.join(t.pattern for t in self.trace)
-        print(f'Message: {m.content}\nTrace: {trace_info}')
+        trace_info = '\n'.join(f'{i}: ' + t.pattern
+                               for i, t in enumerate(self.trace))
+        print(f'Message: {m.content}\nTrace:\n{trace_info}')
         try:
             return await self.function(c, m)
         except Exception as e:

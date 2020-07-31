@@ -24,7 +24,7 @@ async def poll(client: discord.Client,
 
     try:
         # delete previous command
-        await client.delete_message(message)
+        await message.delete()
     except discord.errors.Forbidden:
         # missing permissions
         pass
@@ -45,27 +45,26 @@ async def poll(client: discord.Client,
                               '\nUse :thumbsup: or :thumbsdown: to vote!' +
                               f'\nPoll finalizes in {td(rem_seconds)}')
         ctime = time.time()
-        poll_msg = await poll_msg.edit(poll_msg, embed=embed)
+        await poll_msg.edit(embed=embed)
         deltatime = time.time() - ctime
         rem_seconds -= deltatime
     if rem_seconds > 0:
         await asyncio.sleep(rem_seconds)
     # Poll finalized
-    poll_msg = await discord.abc.Messageable.fetch_message(poll_msg.id)
+    poll_msg = await message.channel.fetch_message(poll_msg.id)
     yes = 0
     no = 0
     for r in poll_msg.reactions:
         r: discord.Reaction
-        print(r.emoji)
-        if r.emoji == '👍':
+        if r.emoji.startswith('👍'):
             yes = r.count
-        if r.emoji == '👎':
+        if r.emoji.startswith('👎'):
             no = r.count
     embed = discord.Embed(title='Poll', description=prompt +
                           '\nUse :thumbsup: or :thumbsdown: to vote!' +
                           f'\nPoll has been finished, results are final.' +
                           f'\n\nYes: {yes}\nNo: {no}')
-    await poll_msg.edit(poll_msg, embed=embed)
+    await poll_msg.edit(embed=embed)
 
 
 @Endpoint

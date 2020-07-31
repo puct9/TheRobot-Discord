@@ -45,9 +45,8 @@ async def new_game(client: discord.Client,
     db_data = json.loads(REDISDB.get('con4').decode())
     db_data[message.author.mention] = serialised
     REDISDB.set('con4', json.dumps(db_data).encode())
-    await client.send_message(message.channel,
-                              'New game!\n' +
-                              game.discord_message())
+    await message.channel.send('New game!\n' +
+                               game.discord_message())
 
 
 @Endpoint

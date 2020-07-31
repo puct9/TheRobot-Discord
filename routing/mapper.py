@@ -22,14 +22,6 @@ class Pattern:
         self.pattern = pattern
 
     @property
-    def trace(self):
-        return '69'
-
-    @trace.setter
-    def set_trace(self):
-        print('Why the fuck are you setting me?')
-
-    @property
     def d_pattern(self):
         # Returns a discord chat friendly pattern
         friendly = '```py\nr\'' + self.pattern + '\'```'

@@ -70,7 +70,7 @@ async def getcms(name, region):
 
     fig_size = plt.gcf().get_size_inches()
     scale_factor = len(cms) / 25
-    plt.gcf().set_size_inches(fig_size[0], fig_size[1] * scale_factor)
+    plt.gcf().set_size_inches(fig_size[0], fig_size[1] * max(1, scale_factor))
 
     fig.tight_layout()
 

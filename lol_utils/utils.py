@@ -32,7 +32,7 @@ async def getchamps(region):
             f'https://ddragon.leagueoflegends.com/realms/{region}.json'
         )
         region_info = region_info.json()
-        lang = region_info['l']
+        lang = 'en_AU'  # region_info['l']
         ver = region_info['n']['champion']
         champdata = await client.get(
             f'https://ddragon.leagueoflegends.com/cdn/{ver}/data/{lang}/'

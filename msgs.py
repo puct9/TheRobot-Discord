@@ -9,6 +9,7 @@ import c4_utils.msgs
 import osu_utils.msgs
 import tf2_utils.msgs
 import mc_utils.msgs
+import lol_utils.msgs
 
 
 msgpatterns = [
@@ -24,5 +25,7 @@ msgpatterns = [
 
     Pattern(r'^\$osu .+', osu_utils.msgs.msgpatterns),
 
-    Pattern(r'^\$c4 .+', c4_utils.msgs.msgpatterns)
+    Pattern(r'^\$c4 .+', c4_utils.msgs.msgpatterns),
+
+    Pattern(r'^\$lol .+', lol_utils.msgs.msgpatterns),
 ]

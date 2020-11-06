@@ -5,6 +5,7 @@ from routing.mapper import Pattern
 import botutils
 
 # message forwarding
+import ai_utils.msgs
 import c4_utils.msgs
 import osu_utils.msgs
 import tf2_utils.msgs
@@ -28,4 +29,6 @@ msgpatterns = [
     Pattern(r'^\$c4 .+', c4_utils.msgs.msgpatterns),
 
     Pattern(r'^\$lol .+', lol_utils.msgs.msgpatterns),
+
+    Pattern(r'^\$ai .+', ai_utils.msgs.msgpatterns),
 ]

@@ -28,3 +28,14 @@ async def predict_gender(client: discord.Client,
     await message.channel.send(f'Name {inp} is\n'
                                f'Male: {round(float(male * 100))}%\n'
                                f'Female: {round(float(female * 100))}%')
+
+
+@Endpoint
+async def get_summary(client: discord.Client,
+                      message: discord.Message):
+    """
+    Message the graph
+    """
+    msg = []
+    MODEL.summary(print_fn=msg.append)
+    await message.channel.send('Model\n```' + '\n'.join(msg) + '```')

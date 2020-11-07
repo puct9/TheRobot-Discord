@@ -25,5 +25,6 @@ async def predict_gender(client: discord.Client,
     except ValueError:
         await message.channel.send('An error has occurred')
     male, female = MODEL.predict(name)[0]
-    await message.channel.send(f'Male: {round(float(male * 100))}%\n'
+    await message.channel.send(f'Name {name} is\n'
+                               f'Male: {round(float(male * 100))}%\n'
                                f'Female: {round(float(female * 100))}%')

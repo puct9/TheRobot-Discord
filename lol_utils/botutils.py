@@ -17,9 +17,7 @@ async def lol_masteries(client: discord.Client,
                         message.content)
     region = re_match.group(1)
     user_name = re_match.group(2)
-    print('Going in')
     success, image_bytes = await getcms(user_name, region)
-    print(success)
     if not success:
         await message.channel.send(image_bytes)
         return

@@ -8,4 +8,7 @@ msgpatterns = [
 
     Pattern(r'^\$ai model gender$', botutils.get_summary,
             description='Show the architecture of the model'),
+
+    Pattern(r'^\$ai modelv gender$', botutils.get_visualisation,
+            description='Show the architecture of the model visually'),
 ]

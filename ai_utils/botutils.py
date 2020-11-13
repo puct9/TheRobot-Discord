@@ -1,12 +1,12 @@
+import io
 import re
 from string import ascii_uppercase
 
 import discord
 import numpy as np
 from keras.models import load_model
-
+from keras.utils import model_to_dot
 from routing.mapper import Endpoint
-
 
 MODEL = load_model('./ai_utils/model.hdf5', compile=False)
 
@@ -39,3 +39,17 @@ async def get_summary(client: discord.Client,
     msg = []
     MODEL.summary(print_fn=msg.append)
     await message.channel.send('Model\n```' + '\n'.join(msg) + '```')
+
+
+@Endpoint
+async def get_visualisation(client: discord.Client,
+                            message: discord.Message):
+    """
+    Message the visual representation of the graph
+    """
+    dot = model_to_dot(MODEL, show_shapes=True)
+    image_bytes = dot.create(format='png')
+    await message.channel.send(
+        file=discord.File(io.BytesIO(image_bytes),
+                          filename='masteries.png')
+    )

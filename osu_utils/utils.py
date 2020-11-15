@@ -2,8 +2,8 @@ import os
 import io
 import random
 
+import httpx
 import numpy as np
-import requests_async as requests
 from PIL import Image, ImageDraw, ImageFont
 
 
@@ -11,8 +11,9 @@ API_KEY = os.environ.get('osu_api_key')
 
 
 async def osu_getuserinfo(name: str) -> dict:
-    ret = await requests.get('https://osu.ppy.sh/api/get_user',
-                             params={'k': API_KEY, 'u': name})
+    async with httpx.AsyncClient() as client:
+        ret = await client.get('https://osu.ppy.sh/api/get_user',
+                               params={'k': API_KEY, 'u': name})
     return ret.json()
 
 
@@ -24,12 +25,14 @@ async def osu_drawuserinfo(info: dict) -> Image.Image:
     print('waiting for profile pic')
     print(f'https://a.ppy.sh/{info["user_id"]}')
     try:
-        req = await requests.get(f'https://a.ppy.sh/{info["user_id"]}',
-                                 timeout=2)
+        async with httpx.AsyncClient() as client:
+            req = await client.get(f'https://a.ppy.sh/{info["user_id"]}',
+                                   timeout=2)
     except Exception:
         # there is a rare error where some images simply will not download
         # not ideal solution, but we will try to give what the user wants
-        req = await requests.get(f'https://a.ppy.sh')
+        async with httpx.AsyncClient() as client:
+            req = await client.get(f'https://a.ppy.sh')
     print('done')
     profile_pic = Image.open(io.BytesIO(req.content))
     # resize it to the desired size of 112x112 and do some checks

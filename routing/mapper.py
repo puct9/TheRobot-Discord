@@ -56,8 +56,6 @@ def automatch(patterns: List[Pattern], message: str
     for pattern in patterns:
         if pattern.matches(message):
             if isinstance(pattern.next_node, Endpoint):
-                print(pattern.next_node.trace)
-                print(pattern.next_node.function)
                 return pattern.next_node
             return automatch(pattern.next_node, message)
 

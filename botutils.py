@@ -56,9 +56,9 @@ async def poll(client: discord.Client,
     no = 0
     for r in poll_msg.reactions:
         r: discord.Reaction
-        if r.emoji.startswith('👍'):
+        if r.emoji == '👍':
             yes = r.count
-        if r.emoji.startswith('👎'):
+        if r.emoji == '👎':
             no = r.count
     embed = discord.Embed(title='Poll', description=prompt +
                           '\nUse :thumbsup: or :thumbsdown: to vote!' +

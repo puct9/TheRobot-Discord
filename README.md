@@ -1,6 +1,11 @@
 # TheRobot-Discord
+
 ## Add bot
+
+Notice: Bot is dead. Do not attempt to add bot as it will not function.
+
 https://discordapp.com/api/oauth2/authorize?client_id=320813686887415809&permissions=116800&scope=bot
+
 ## Commands
 Commands will start with the prefix `$`.\\
 #### Poll function
